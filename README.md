@@ -1,16 +1,24 @@
 # Real-Time EEG Seizure Detection
 
-This project implements a real-time EEG seizure detection system as described in the reproduced paper. It utilizes Electroencephalogram (EEG) data to identify seizure activity.
-
-## Description
-
-The primary component of this project is a Jupyter Notebook (`Real_Time_EEG_Seizure_Detection.ipynb`) that walks through the data loading, preprocessing, model training (or loading of a pre-trained model), and real-time simulation or testing of seizure detection.
+This repository contains code for reproducing the work on real-time EEG-based seizure detection, based on the paper "Real-Time Seizure Detection using EEG: A Comprehensive Comparison of Recent Approaches under a Realistic Setting" by Lee et al. (CHIL 2022).
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 * Python (the version used for development, e.g., Python 3.8+)
 * pip (Python package installer)
+
+## Orignal Paper
+```bibtex
+@inproceedings{lee2022real,
+  title={Real-Time Seizure Detection using EEG: A Comprehensive Comparison of Recent Approaches under a Realistic Setting},
+  author={Lee, Kwanhyung and Jeong, Hyewon and Kim, Seyun and Yang, Donghwa and Kang, Hoon-Chul and Choi, Edward},
+  booktitle={Conference on Health, Inference, and Learning},
+  pages={311--337},
+  year={2022},
+  organization={PMLR}
+}
+```
 
 ## Setup
 
