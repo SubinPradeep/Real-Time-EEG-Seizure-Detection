@@ -2,11 +2,8 @@
 
 This repository contains code for reproducing the work on real-time EEG-based seizure detection, based on the paper "Real-Time Seizure Detection using EEG: A Comprehensive Comparison of Recent Approaches under a Realistic Setting" by Lee et al. (CHIL 2022).
 
-## Prerequisites
+## Report
 
-Before you begin, ensure you have the following installed:
-* Python (the version used for development, e.g., Python 3.8+)
-* pip (Python package installer)
 
 ## Orignal Paper
 ```bibtex
@@ -20,11 +17,17 @@ Before you begin, ensure you have the following installed:
 }
 ```
 
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+* Python (the version used for development, e.g., Python 3.8+)
+* pip (Python package installer)
+
 ## Setup
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/SubinPradeep/Real-Time-EEG-Seizure-Detection.git](https://github.com/SubinPradeep/Real-Time-EEG-Seizure-Detection.git)
+    git clone https://github.com/SubinPradeep/Real-Time-EEG-Seizure-Detection.git
     cd Real-Time-EEG-Seizure-Detection
     ```
 

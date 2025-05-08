@@ -12,7 +12,6 @@ from sklearn.metrics import (
 )
 import matplotlib.pyplot as plt
 
-# ─── Dataset ──────────────────────────────────────────────────────────────
 class EEGWindowDataset(Dataset):
     def __init__(self, data_path):
         with open(data_path, "rb") as f:
@@ -27,7 +26,6 @@ class EEGWindowDataset(Dataset):
     def __getitem__(self, idx):
         return self.X[idx], self.y[idx], self.subj[idx]
 
-# ─── Model (stronger dropout) ─────────────────────────────────────────────
 class EEG_CRNN(nn.Module):
     def __init__(self, n_ch=19, hidden=32, n_layers=1, dropout=0.7):
         super().__init__()
@@ -59,12 +57,10 @@ class EEG_CRNN(nn.Module):
         h = self.dropout(h)
         return self.fc(h)                # (B,2)
 
-# ─── Training / Evaluation ────────────────────────────────────────────────
 def train_epoch(model, loader, criterion, optimizer, device, augment=False):
     model.train()
     losses, preds, labels = [], [], []
     for X, y, _ in loader:
-        # augmentation: small Gaussian noise
         if augment:
             noise = torch.randn_like(X) * 0.05
             X = X + noise
@@ -102,20 +98,18 @@ def eval_model(model, loader, device):
     cm = confusion_matrix(labels, preds)
     return metrics, (fpr, tpr), cm
 
-# ─── Main ─────────────────────────────────────────────────────────────────
 def main(
     data_path       = "preproc.pkl",
-    holdout_subjects= 6,           # hold out 6 subjects instead of 4
+    holdout_subjects= 6,           
     batch_size      = 64,
     lr              = 1e-3,
-    weight_decay    = 5e-5,        # stronger L2 regularization
+    weight_decay    = 5e-5,       
     epochs          = 40,
     patience        = 7,
     device          = None
 ):
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
-    # load and split
     ds = EEGWindowDataset(data_path)
     subjs = ds.subj
     unique = np.unique(subjs)
@@ -128,12 +122,10 @@ def main(
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
     test_loader  = DataLoader(test_ds, batch_size=batch_size, shuffle=False)
 
-    # model, loss, opt
     model = EEG_CRNN().to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=weight_decay)
 
-    # early stopping
     best_auc = 0
     no_improve=0
     history = {"loss":[], "acc":[], "val_auc":[]}
@@ -141,7 +133,7 @@ def main(
     for ep in range(1, epochs+1):
         loss, acc = train_epoch(model, train_loader, criterion, optimizer, device, augment=True)
         m, (fpr, tpr), _ = eval_model(model, test_loader, device)
-        val_auc = np.trapezoid(tpr, fpr)   # replace deprecated trapz
+        val_auc = np.trapezoid(tpr, fpr)  
 
         history["loss"].append(loss)
         history["acc"].append(acc)
@@ -158,12 +150,10 @@ def main(
                 print("Early stopping triggered.")
                 break
 
-    # load best model & final evaluate
     model.load_state_dict(torch.load("best_model.pth"))
     metrics, (fpr, tpr), cm = eval_model(model, test_loader, device)
     print("\nFinal Test Metrics:", metrics)
 
-    # ─── Visualizations ────────────────────────────────────────────────────
     plt.figure(); plt.plot(history["loss"], label="Loss"); plt.title("Train Loss")
     plt.xlabel("Epoch"); plt.ylabel("Loss")
     plt.figure(); plt.plot(history["acc"], label="Acc");  plt.title("Train Acc")

@@ -3,7 +3,6 @@ from pyedflib import highlevel
 import os
 from datetime import datetime
 
-# ── 1) Scale back to ~16K windows ────────────────────────────────────────────
 N_SUBJECTS      = 16     # 16 subjects
 WINDOWS_PER_SUB = 1000   # 16 × 1 000 = 16 000 total windows
 SEIZURE_FRAC    = 0.07   # ~7% seizure windows
@@ -14,7 +13,7 @@ SAMPLES_PER_WIN = SAMPLE_RATE * WINDOW_SEC
 
 BASE_DIR = './synthetic_dataset'
 
-# ── 2) Signal generators ───────────────────────────────────────────────────
+
 def make_background(channels, samples):
     t = np.arange(samples) / SAMPLE_RATE
     sig = np.zeros((channels, samples))
@@ -22,7 +21,6 @@ def make_background(channels, samples):
         freq = np.random.uniform(fmin, fmax)
         amp  = np.random.uniform(5, 20)
         sig += amp * np.sin(2*np.pi*freq * t)[None,:]
-    # pink noise
     fft = np.fft.rfft(np.random.randn(samples))
     ps = fft / np.maximum(np.fft.rfftfreq(samples), 1e-6)
     pink = np.fft.irfft(ps)
@@ -41,7 +39,6 @@ def make_seizure(channels, samples):
         sig[ch, start:start+burst_len] += amp * np.sin(2*np.pi*freq * t[:burst_len])
     return sig
 
-# ── 3) EDF header template ─────────────────────────────────────────────────
 from pyedflib import highlevel
 channel_labels = [
     'EEG FP1','EEG FP2','EEG F3','EEG F4','EEG F7','EEG F8',
@@ -60,13 +57,11 @@ edf_header = {
     'startdate': datetime.now()
 }
 
-# ── 4) Main loop ────────────────────────────────────────────────────────────
 for subj in range(1, N_SUBJECTS+1):
     for win in range(WINDOWS_PER_SUB):
         is_seiz = (np.random.rand() < SEIZURE_FRAC)
         sig     = make_seizure(n_ch, SAMPLES_PER_WIN) if is_seiz else make_background(n_ch, SAMPLES_PER_WIN)
 
-        # compute integer physical ranges to avoid 8‑char warnings
         phys_min = int(np.floor(sig.min()))
         phys_max = int(np.ceil (sig.max()))
 
@@ -84,7 +79,6 @@ for subj in range(1, N_SUBJECTS+1):
                 'prefilter'       : ''
             })
 
-        # directory & filenames
         d = os.path.join(BASE_DIR,
                          'train',
                          f'{subj:03d}_session',
@@ -94,7 +88,6 @@ for subj in range(1, N_SUBJECTS+1):
         edf_fname = os.path.join(d, f'{subj:03d}_win{win:04d}.edf')
         tse_fname = edf_fname.replace('.edf', '.tse_bi')
 
-        # write EDF + labels
         highlevel.write_edf(edf_fname, sig, channel_info, edf_header)
 
         with open(tse_fname, 'w') as f:

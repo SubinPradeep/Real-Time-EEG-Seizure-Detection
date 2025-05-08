@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os
 import pickle
 import numpy as np
@@ -22,7 +21,6 @@ def process_one(edf_path, sfreq=200, win_s=4, step_s=1):
     Returns: segments, binary labels, onset/offset tags, subject IDs.
     """
     raw = mne.io.read_raw_edf(edf_path, preload=True, verbose=False)
-    # Band-pass 0.5–99 Hz using 4th-order Butterworth IIR
     raw.filter(
         l_freq=0.5,
         h_freq=99.0,
@@ -51,22 +49,19 @@ def process_one(edf_path, sfreq=200, win_s=4, step_s=1):
             st = start_i + i * step_samples
             en = st + win_samples
             w  = data[:, st:en]
-            # per-channel z-score
             w  = (w - w.mean(axis=1, keepdims=True)) / (w.std(axis=1, keepdims=True) + 1e-8)
 
-            # binary label
             labs.append(1 if lab!='bckg' else 0)
-            # onset/offset tagging
             rel_start = st/sfreq - s
             rel_end   = e - (en/sfreq)
             if abs(rel_start) < step_s:
-                tag = 1  # ictal_onset
+                tag = 1  
             elif abs(rel_end) < step_s:
-                tag = 2  # ictal_offset
+                tag = 2 
             elif lab!='bckg':
-                tag = 3  # ictal
+                tag = 3  
             else:
-                tag = 0  # non-ictal
+                tag = 0  
             tags.append(tag)
             subjs.append(subj)
             segs.append(w)
@@ -90,7 +85,6 @@ def main(input_dir, output_file):
     t    = np.array(all_t, dtype=np.int64)
     subj = np.array(all_s, dtype=np.int64)
 
-    # Create output dir if needed
     out_dir = os.path.dirname(output_file)
     if out_dir:
         os.makedirs(out_dir, exist_ok=True)
