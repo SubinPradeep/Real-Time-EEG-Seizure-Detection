@@ -70,6 +70,13 @@ Before you begin, ensure you have the following installed:
     ```
     python model.py
     ```
+
+4. **Focal Loss (Paper Extension)**
+    To run the focal loss extension of the implementation run:
+    ```
+    python focal_loss_model.py
+    ```
+    
 4. **Results**
     Our model achieves the following performance metrics:
     - acc: 0.9996
