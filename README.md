@@ -3,7 +3,7 @@
 This repository contains code for reproducing the work on real-time EEG-based seizure detection, based on the paper "Real-Time Seizure Detection using EEG: A Comprehensive Comparison of Recent Approaches under a Realistic Setting" by Lee et al. (CHIL 2022).
 
 ## Report
-
+[https://drive.google.com/file/d/15bQVRILmg7UyBtu6aMdFtRYtPrIbnsgm/view](https://drive.google.com/file/d/15bQVRILmg7UyBtu6aMdFtRYtPrIbnsgm/view)
 
 ## Orignal Paper
 ```bibtex
