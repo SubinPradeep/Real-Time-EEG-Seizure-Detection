@@ -76,7 +76,7 @@ Before you begin, ensure you have the following installed:
     ```
     python focal_loss_model.py
     ```
-    
+
 4. **Results**
     Our model achieves the following performance metrics:
     - acc: 0.9996
